@@ -1,79 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Text Summarizer</title>
-    <link rel="stylesheet" href="static\style.css" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="/static/style.css" />
-  </head>
-  <body style="background-color: #F3B664">
-    <div class="heading_div">
-      <h1 class="heading animate-charcter">TEXT SUMMARIZER</h1>
-    </div>
-    <div>
-      <table>
-        <thead class="table-head">
-          <th>
-            <h1
-              style="
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text Summarizer</title>
+  <link rel="stylesheet" href="static\style.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body style="background-color: #f3b664">
+  <div class="heading_div">
+    <h1 class="heading animate-charcter">TEXT SUMMARIZER</h1>
+  </div>
+  <div>
+    <table>
+      <thead class="table-head">
+        <th>
+          <h1 style="
                 display: flex;
                 align-items: left;
                 justify-content: left;
                 font-family: Oswald, sans-serif;
-              "
-            >
-              Enter your text :
-            </h1>
-          </th>
-          <th>
-            <h1
-              style="
+              ">
+            Enter your text :
+          </h1>
+        </th>
+        <th>
+          <h1 style="
                 display: flex;
                 align-items: left;
                 justify-content: left;
                 font-family: Oswald, sans-serif;
-              "
-            >
-              Summary :
-            </h1>
-          </th>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="left-column">
-              <form method="post" action="/">
-                <textarea
-                  class="input_text_area"
-                  name="text"
-                  rows="10"
-                  cols="40"
-                  placeholder="Enter your text here"
-                ></textarea>
-                
-                <input type="submit" value="Summarize" class="submit-button"/> 
-              </form>
-            </td>
-            <td class="right-column">
-              <div class="summary_div">
-                {% if summary %}
-                {% for sentence in summary %}
-                {{ sentence }}<br>
-                {% endfor %}
-              {% endif %}
+              ">
+            Summary :
+          </h1>
+        </th>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="left-column">
+            <form method="post" action="/">
+              <textarea class="input_text_area" name="text" rows="10" cols="40"
+                placeholder="Enter your text here"></textarea>
+
+              <input type="submit" value="Summarize" class="submit-button" />
+              <input type="button" value="Clear" class="clear-button" onclick="clearTextArea()" />
+              <div class="slidecontainer">
+                <label for="numSentences" style="font-family: Oswald, sans-serif">Number of Sentences :
+                </label>
+                <input type="range" id="numSentences" name="numSentences" min="10" max="150" value="10" />
+                <span id="numSentencesValue">10</span>
+
+                <script>
+                  var slider = document.getElementById("numSentences");
+                  var output = document.getElementById("numSentencesValue");
+                  output.innerHTML = slider.value;
+
+                  slider.oninput = function () {
+                    output.innerHTML = this.value;
+                  };
+                  function clearTextArea() {
+                    document.querySelector(".input_text_area").value = "";
+                    document.querySelector(".summary_div").innerHTML = "";
+                  }
+
+                </script>
               </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </body>
+            </form>
+          </td>
+          <td class="right-column">
+            <div class="summary_div">
+              {% if summary %} {% for sentence in summary %} {{ sentence }}<br />
+              {% endfor %} {% endif %}
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+
 </html>

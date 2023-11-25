@@ -7,12 +7,15 @@ app = Flask(__name__)
 def index():
     summary = None
     if request.method == 'POST':
-        text = request.form['text'].strip()  # Remove leading and trailing spaces
-        if text and not text.isspace():  # Check if the text is not empty and not just spaces
+        text = request.form['text'].strip() 
+        if text and not text.isspace():
             sentence_list, filtered_words = preprocess_text(text)
             frequency_map = calculate_word_frequencies(filtered_words)
             sent_score = calculate_sentence_scores(sentence_list, frequency_map)
-            summary = generate_summary(sent_score, num_sentences=10) 
+            num_sentences = int(request.form.get('numSentences', 10))
+            summary = generate_summary(sent_score, num_sentences=num_sentences) 
+    elif request.method == 'GET':
+        summary = None  # Set summary to None when the page is loaded or refreshed
     return render_template('index.html', summary=summary)
 
 if __name__ == '__main__':
