@@ -15,7 +15,7 @@ def index():
             num_sentences = int(request.form.get('numSentences', 10))
             summary = generate_summary(sent_score, num_sentences=num_sentences) 
     elif request.method == 'GET':
-        summary = None  # Set summary to None when the page is loaded or refreshed
+        summary = None
     return render_template('index.html', summary=summary)
 
 if __name__ == '__main__':
