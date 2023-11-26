@@ -45,7 +45,6 @@ def calculate_sentence_scores(sentence_list, frequency_map):
     return sent_score
 
 def generate_summary(sent_score, num_sentences=10):
-    # Finding the top sentences based on scores
     summary = heapq.nlargest(num_sentences, sent_score, key=sent_score.get)
     
     return summary

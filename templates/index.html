@@ -12,6 +12,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+  <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.0.0/mammoth.browser.min.js"></script>
 </head>
 
 <body style="background-color: #f3b664">
@@ -59,7 +62,6 @@
                 </label>
                 <input type="range" id="numSentences" name="numSentences" min="10" max="150" value="10" />
                 <span id="numSentencesValue">10</span>
-
                 <script>
                   var slider = document.getElementById("numSentences");
                   var output = document.getElementById("numSentencesValue");
@@ -68,10 +70,12 @@
                   slider.oninput = function () {
                     output.innerHTML = this.value;
                   };
+
                   function clearTextArea() {
                     document.querySelector(".input_text_area").value = "";
                     document.querySelector(".summary_div").innerHTML = "";
                   }
+
                   function loadFile() {
                     var input, file, fr;
 
@@ -81,11 +85,45 @@
                     }
 
                     file = input.files[0];
-                    fr = new FileReader();
-                    fr.onload = function () {
-                      document.getElementById('textInput').value = fr.result;
-                    };
-                    fr.readAsText(file);
+
+                    if (file.name.endsWith('.pdf')) {
+                      var fileReader = new FileReader();
+                      fileReader.onload = function () {
+                        var typedarray = new Uint8Array(this.result);
+                        displayPDF(typedarray);
+                      };
+                      fileReader.readAsArrayBuffer(file);
+                    } else if (file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
+                      var fileReader = new FileReader();
+                      fileReader.onload = function () {
+                        mammoth.extractRawText({ arrayBuffer: this.result })
+                          .then(displayText);
+                      };
+                      fileReader.readAsArrayBuffer(file)
+                    } else {
+                      fr = new FileReader();
+                      fr.onload = function () {
+                        document.getElementById('textInput').value = fr.result;
+                      };
+                      fr.readAsText(file);
+                    }
+                  }
+
+                  function displayPDF(data) {
+                    pdfjsLib.getDocument({ data: data }).promise.then(function (pdf) {
+                      pdf.getPage(1).then(function (page) {
+                        page.getTextContent().then(function (textContent) {
+                          var text = "";
+                          textContent.items.forEach(function (item) {
+                            text += item.str + " ";
+                          });
+                          document.getElementById('textInput').value = text;
+                        });
+                      });
+                    });
+                  }
+                  function displayText(result) {
+                    document.getElementById('textInput').value = result.value;
                   }
                 </script>
               </div>
