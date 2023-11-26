@@ -8,14 +8,9 @@ from flask import Flask
 app = Flask(__name__)
 
 def preprocess_text(text):
-    # Tokenize the text into sentences and words
     sentence_list = nltk.sent_tokenize(text)
     word_list = nltk.word_tokenize(text)
-    
-    # Initializing stop words
     stopwords = nltk.corpus.stopwords.words('english')
-    
-    # Removing stopwords from the word list
     filtered_words = [word for word in word_list if word.lower() not in stopwords]
     
     return sentence_list, filtered_words
